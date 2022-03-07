@@ -1,0 +1,29 @@
+<changelist name="Uncommitted_changes_before_Update_at_05_03_2022,_17_54_[Changes]" date="1646484894285" recycled="false" toDelete="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_05_03_2022,_17_54_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 05.03.2022, 17:54 [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/AccountingManager/Util/Library.class" />
+    <option name="AFTER_PATH" value="out/production/AccountingManager/Util/Library.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_05_03_2022,_17_54_[Changes]/Library.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/AccountingManager/Util/YearlyReportReader.class" />
+    <option name="AFTER_PATH" value="out/production/AccountingManager/Util/YearlyReportReader.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_05_03_2022,_17_54_[Changes]/YearlyReportReader.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/AccountingManager/Util/MonthlyReportReader.class" />
+    <option name="AFTER_PATH" value="out/production/AccountingManager/Util/MonthlyReportReader.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_05_03_2022,_17_54_[Changes]/MonthlyReportReader.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/AccountingManager/Util/Menu.class" />
+    <option name="AFTER_PATH" value="out/production/AccountingManager/Util/Menu.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_05_03_2022,_17_54_[Changes]/Menu.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="out/production/AccountingManager/Util/MounthlyReport.class" />
+    <option name="AFTER_PATH" value="out/production/AccountingManager/Util/MounthlyReport.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_05_03_2022,_17_54_[Changes]/MounthlyReport.class" />
+  </binary>
+</changelist>

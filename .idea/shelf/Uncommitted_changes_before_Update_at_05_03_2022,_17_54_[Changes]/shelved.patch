@@ -1,0 +1,578 @@
+Index: src/Util/Menu.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Util/Menu.java b/src/Menu/Menu.java
+rename from src/Util/Menu.java
+rename to src/Menu/Menu.java
+--- a/src/Util/Menu.java	(revision 7081ca9a539ffa11530cd6b3638c9fcad75f7ae8)
++++ b/src/Menu/Menu.java	(date 1646409747868)
+@@ -1,4 +1,8 @@
+-package Util;
++package Menu;
++import Records.MonthlyReportReader;
++import Records.YearlyReportReader;
++import Util.Operation;
++
+ import java.util.Scanner;
+ 
+ public class Menu {
+@@ -6,10 +10,10 @@
+         while (true) {
+             printMenu();
+             Scanner scanner = new Scanner(System.in);
+-            String command = scanner.next();
++            String command = scanner.nextLine();
+             switch (command) {
+                 case "1":
+-                    MonthlyReportReader.readMounthlyReports();
++                    MonthlyReportReader.readMonthlyReports();
+                     break;
+                 case "2":
+                     YearlyReportReader.readYearlyReports();
+@@ -31,7 +35,6 @@
+             }
+         }
+     }
+-
+     public static void printMenu() {
+         System.out.println();
+         System.out.println("Что вы хотите сделать? ");
+Index: src/Util/YearlyReport.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package Util;\n\nimport java.util.ArrayList;\n\npublic class YearlyReport {\n    private final int year;\n    private final int numberMount;\n    private final String nameMount;\n    private final boolean isExpense;\n    private final int amount;\n    public int getYear() {\n    return year;\n    }\n\n    public YearlyReport(int year, int numberMount, int amount, boolean isExpense) {\n        this.year = year;\n        this.numberMount = numberMount;\n        this.nameMount = switch (numberMount) {\n            case 1 -> \"Январь\";\n            case 2 -> \"Февраль\";\n            case 3 -> \"Март\";\n            default -> \"\";\n        };\n        this.amount = amount;\n        this.isExpense = isExpense;\n    }\n\n    @Override\n    public String toString() {\n        return \"Util.YearlyReport{\" +\n                \"numberMount=\" + numberMount +\n                \", nameMount='\" + nameMount + '\\'' +\n                \", amount=\" + amount +\n                \", isExpense=\" + isExpense +\n                '}';\n    }\n\n    public int getNumberMount() {\n        return numberMount;\n    }\n    public String getNameMount() {\n        return nameMount;\n    }\n    public boolean IsExpense() {\n        return isExpense;\n    }\n    public int getAmount() {\n        return amount;\n    }\n\n    public static double getAverageYearly(ArrayList<YearlyReport> yearlyReports, boolean isExpense) {\n        int sum = 0;\n        int numberOfMonths = 0;\n        for (YearlyReport yearlyReport : yearlyReports) {\n            if (yearlyReport.isExpense == isExpense) {\n                sum += yearlyReport.amount;\n                numberOfMonths++;\n            }\n        }\n        return sum / numberOfMonths;\n    }\n    public static int getBalanceForMonth(ArrayList<YearlyReport> yearlyReports, int numberMount) {\n        int income = 0;\n        int expense = 0;\n\n        for (YearlyReport yearlyReport : yearlyReports) {\n            if (!yearlyReport.isExpense && yearlyReport.numberMount == numberMount) {\n                income = yearlyReport.amount;\n            }\n            if (yearlyReport.isExpense && yearlyReport.numberMount == numberMount) {\n                expense = yearlyReport.amount;\n            }\n        }\n        return income - expense;\n\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Util/YearlyReport.java b/src/Util/YearlyReport.java
+--- a/src/Util/YearlyReport.java	(revision 7081ca9a539ffa11530cd6b3638c9fcad75f7ae8)
++++ b/src/Util/YearlyReport.java	(date 1646410044738)
+@@ -5,22 +5,13 @@
+ public class YearlyReport {
+     private final int year;
+     private final int numberMount;
+-    private final String nameMount;
++    private String nameMount;
+     private final boolean isExpense;
+     private final int amount;
+-    public int getYear() {
+-    return year;
+-    }
+ 
+     public YearlyReport(int year, int numberMount, int amount, boolean isExpense) {
+         this.year = year;
+         this.numberMount = numberMount;
+-        this.nameMount = switch (numberMount) {
+-            case 1 -> "Январь";
+-            case 2 -> "Февраль";
+-            case 3 -> "Март";
+-            default -> "";
+-        };
+         this.amount = amount;
+         this.isExpense = isExpense;
+     }
+@@ -34,11 +25,19 @@
+                 ", isExpense=" + isExpense +
+                 '}';
+     }
+-
++    public int getYear() {
++        return year;
++    }
+     public int getNumberMount() {
+         return numberMount;
+     }
+     public String getNameMount() {
++            nameMount = switch (numberMount) {
++                case 1 -> "Январь";
++                case 2 -> "Февраль";
++                case 3 -> "Март";
++                default -> "";
++            };
+         return nameMount;
+     }
+     public boolean IsExpense() {
+@@ -48,7 +47,7 @@
+         return amount;
+     }
+ 
+-    public static double getAverageYearly(ArrayList<YearlyReport> yearlyReports, boolean isExpense) {
++    public static double getAverageYearly(ArrayList<YearlyReport> yearlyReports, boolean isExpense) { // Average yearly Income(isExpense == false), Expenses (isExpense == true)
+         int sum = 0;
+         int numberOfMonths = 0;
+         for (YearlyReport yearlyReport : yearlyReports) {
+@@ -59,7 +58,8 @@
+         }
+         return sum / numberOfMonths;
+     }
+-    public static int getBalanceForMonth(ArrayList<YearlyReport> yearlyReports, int numberMount) {
++
++    public static int getBalanceForMonth(ArrayList<YearlyReport> yearlyReports, int numberMount) { // Balance for Month Income(isExpense == false), Expenses (isExpense == true)
+         int income = 0;
+         int expense = 0;
+ 
+@@ -72,6 +72,5 @@
+             }
+         }
+         return income - expense;
+-
+     }
+ }
+\ No newline at end of file
+Index: src/Util/MounthlyReport.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Util/MounthlyReport.java b/src/Util/MonthlyReport.java
+rename from src/Util/MounthlyReport.java
+rename to src/Util/MonthlyReport.java
+--- a/src/Util/MounthlyReport.java	(revision 7081ca9a539ffa11530cd6b3638c9fcad75f7ae8)
++++ b/src/Util/MonthlyReport.java	(date 1646410044743)
+@@ -1,40 +1,32 @@
+ package Util;
+ import java.util.ArrayList;
+-public class MounthlyReport {
++public class MonthlyReport {
+     private final int numberMount;
+-    private final String nameMount;
+     private final String namePurchase;
+     private final boolean isExpense;
+     private final int quantity;
+     private final int price;
+-    public MounthlyReport(int numberMount, String namePurchase, boolean isExpense, int quantity, int price) {
++    public MonthlyReport(int numberMount, String namePurchase, boolean isExpense, int quantity, int price) {
+         this.numberMount = numberMount;
+-        this.nameMount = switch (numberMount) {
+-            case 1 -> "Январь";
+-            case 2 -> "Февраль";
+-            case 3 -> "Март";
+-            default -> "";
+-        };
+         this.namePurchase = namePurchase;
+         this.quantity = quantity;
+         this.isExpense = isExpense;
+         this.price = price;
+     }
++
+     @Override
+     public String toString() {
+-        return "Util.MounthlyReport{" +
++        return "Util.MonthlyReport{" +
+                 "numberMount=" + numberMount +
+-                ", nameMount='" + nameMount + '\'' +
+                 ", namePurchase='" + namePurchase + '\'' +
+                 ", isExpense=" + isExpense +
+                 ", quantity=" + quantity +
+                 ", price=" + price +
+                 '}';
+     }
+-
+-    public static int getIncomeExpensesMount(ArrayList<MounthlyReport> mounthlyReports, int numberMount, boolean isExpense) {
++    public static int getIncomeExpensesMount(ArrayList<MonthlyReport> mounthlyReports, int numberMount, boolean isExpense) { // Find month Income(isExpense == false), Expenses (isExpense == true)
+         int sum = 0;
+-        for (MounthlyReport mounthlyReport : mounthlyReports) {
++        for (MonthlyReport mounthlyReport : mounthlyReports) {
+             if (mounthlyReport.isExpense == isExpense  && mounthlyReport.numberMount == numberMount) {
+                 sum += (mounthlyReport.quantity * mounthlyReport.price);
+             }
+@@ -42,10 +34,10 @@
+         return sum;
+     }
+ 
+-    public static int getBestIncomeExpensesMount(ArrayList<MounthlyReport> mounthlyReports, int  numberMount, boolean isExpense) {
++    public static int getBestIncomeExpensesMount(ArrayList<MonthlyReport> mounthlyReports, int  numberMount, boolean isExpense) { //Find best month Income(isExpense == false), Expenses (isExpense == true)
+         int sum = 0;
+         int sumMax = 0;
+-        for (MounthlyReport mounthlyReport : mounthlyReports) {
++        for (MonthlyReport mounthlyReport : mounthlyReports) {
+             if (mounthlyReport.isExpense == isExpense && mounthlyReport.numberMount == numberMount) {
+                 sum = (mounthlyReport.quantity * mounthlyReport.price);
+                 if (sum > sumMax) {
+@@ -56,11 +48,11 @@
+         return sumMax;
+     }
+ 
+-    public static String getNameBestMonth(ArrayList<MounthlyReport> mounthlyReports, int numberMount, boolean isExpense) {
++    public static String getNameBestMonth(ArrayList<MonthlyReport> mounthlyReports, int numberMount, boolean isExpense) { //Find name best month Income(isExpense == false), Expenses (isExpense == true)
+         int sumMax = 0;
+         int sum = 0;
+         String nameBestIncome = " ";
+-        for (MounthlyReport mounthlyReport : mounthlyReports) {
++        for (MonthlyReport mounthlyReport : mounthlyReports) {
+             if (mounthlyReport.isExpense == isExpense && mounthlyReport.numberMount == numberMount) {
+                 sum = (mounthlyReport.quantity * mounthlyReport.price);
+                 if (sum > sumMax) {
+Index: src/Main.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>import Util.Menu;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.println(\"\\nФинансовый менеджер v0.000001\\n\");\n        Menu.menus();\n        System.out.println(\"До свидание\");\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Main.java b/src/Main.java
+--- a/src/Main.java	(revision 7081ca9a539ffa11530cd6b3638c9fcad75f7ae8)
++++ b/src/Main.java	(date 1646372371050)
+@@ -1,4 +1,4 @@
+-import Util.Menu;
++import Menu.Menu;
+ 
+ public class Main {
+     public static void main(String[] args) {
+Index: src/Util/MonthlyReportReader.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Util/MonthlyReportReader.java b/src/Records/MonthlyReportReader.java
+rename from src/Util/MonthlyReportReader.java
+rename to src/Records/MonthlyReportReader.java
+--- a/src/Util/MonthlyReportReader.java	(revision 7081ca9a539ffa11530cd6b3638c9fcad75f7ae8)
++++ b/src/Records/MonthlyReportReader.java	(date 1646405539923)
+@@ -1,4 +1,5 @@
+-package Util;
++package Records;
++import Util.MonthlyReport;
+ import java.io.IOException;
+ import java.util.ArrayList;
+ import java.util.List;
+@@ -6,9 +7,8 @@
+ import java.nio.file.Path;
+ 
+ public class MonthlyReportReader {
+-    static ArrayList<MounthlyReport> mounthlyReports = new ArrayList<>();
+-
+-    private static String readCSVile(String path) {
++    public static ArrayList<MonthlyReport> mounthlyReports = new ArrayList<>();
++    private static String readCSVile(String path) { //Read CSV file
+         try {
+             return Files.readString(Path.of(path));
+         } catch (IOException e) {
+@@ -17,17 +17,20 @@
+         }
+     }
+ 
+-    public static void readMounthlyReports() {
++    public static void readMonthlyReports() { //Read Line monthly Report
+         mounthlyReports.clear();
+         int reportsCount = 0;
+         for (int i = 1; i <= 3; i++) {
+             String nameFile = "m.20210" + i + ".csv";
+             String fileContents = readCSVile("resources/" + nameFile);
+-            if (fileContents != null) {
++            if (fileContents == null) {
++                System.out.println("Ошибка файл пустой");
++                return;
++            }
+                 List<String> reports = List.of(fileContents.split("\\n"));
+                 for (int j = 1; j < reports.size(); j++) {
+                     List<String> lineContents = List.of(reports.get(j).split(","));
+-                    MounthlyReport mounthlyReport = new MounthlyReport(
++                    MonthlyReport mounthlyReport = new MonthlyReport(
+                             Integer.parseInt(lineContents.get(0)),
+                             lineContents.get(1),
+                             lineContents.get(2).equals("TRUE"),
+@@ -35,9 +38,6 @@
+                             Integer.parseInt(lineContents.get(4))
+                     );
+                     mounthlyReports.add(mounthlyReport);
+-                }
+-            } else {
+-                System.out.println("Ошибка файл пустой");
+             } reportsCount++;
+         }
+         if (mounthlyReports.size() != 0) {
+Index: src/Util/YearlyReportReader.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Util/YearlyReportReader.java b/src/Records/YearlyReportReader.java
+rename from src/Util/YearlyReportReader.java
+rename to src/Records/YearlyReportReader.java
+--- a/src/Util/YearlyReportReader.java	(revision 7081ca9a539ffa11530cd6b3638c9fcad75f7ae8)
++++ b/src/Records/YearlyReportReader.java	(date 1646484879426)
+@@ -1,13 +1,14 @@
+-package Util;
++package Records;
++import Util.YearlyReport;
++
+ import java.util.ArrayList;
+ import java.io.IOException;
+ import java.nio.file.Files;
+ import java.nio.file.Path;
+ import java.util.List;
+ public class YearlyReportReader {
+-    static ArrayList<YearlyReport> yearlyReports = new ArrayList<>();
+-
+-    private static String readCSVile(String path) {
++    public static ArrayList<YearlyReport> yearlyReports = new ArrayList<>();
++    private static String readCSVile(String path) { //Read CSV file
+         try {
+             return Files.readString(Path.of(path));
+         } catch (IOException e) {
+@@ -16,11 +17,14 @@
+         }
+     }
+ 
+-    public static void readYearlyReports() {
++    public static void readYearlyReports() { // Read Line yearly Report
+         yearlyReports.clear();
+         int reportsCount = 0;
+         String fileContents = readCSVile("resources/y.2021.csv");
+-        if (fileContents != null) {
++        if (fileContents == null) {
++            System.out.println("Ошибка файл пустой");
++            return;
++        }
+             List<String> reports = List.of(fileContents.split("\\n"));
+             for (int i = 1; i < reports.size(); i++) {
+                 List<String> lineContents = List.of(reports.get(i).split(","));
+@@ -31,9 +35,6 @@
+                         lineContents.get(2).equals("TRUE"));
+                 yearlyReports.add(yearlyReport);
+             }
+-        } else {
+-            System.out.println("Ошибка файл пустой");
+-        }
+         reportsCount++;
+         if (yearlyReports.size() != 0) {
+             System.out.printf("Успешно считано %d отчетов\n", reportsCount);
+Index: src/Util/Operation.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package Util;\n\npublic class Operation {\n    public static void compareReports() {\n        Library.checkNull();\n        for (YearlyReport yearlyReport : YearlyReportReader.yearlyReports) {\n            if (!yearlyReport.IsExpense()) {\n                if (yearlyReport.getAmount() == MounthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false)) {\n                    System.out.printf(\"\\n%s\\nОтчет по доходу сходится, ошибок нет\\nСумма дохода в годовом отсчете: %d\\nСумма дохода в месячном отсчете: %d\\n\",\n                            yearlyReport.getNameMount(),\n                            yearlyReport.getAmount(),\n                            MounthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false));\n                } else {\n                    System.out.printf(\"\\n%s\\nОтчет по доходу не сходится\\nСумма дохода в годовом отсчете %d\\nСумма дохода в месячном отсчете %d\\n\",\n                            yearlyReport.getNameMount(),\n                            yearlyReport.getAmount(),\n                            MounthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false));\n                }\n            } else {\n                if (yearlyReport.getAmount() == MounthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true)) {\n                    System.out.printf(\"Отчет по расходам сходится, ошибок нет\\nСумма расхода в годовом отсчете: %d\\nСумма расходов в месячном отсчете: %d\\n\",\n                            yearlyReport.getAmount(),\n                            MounthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true));\n                } else {\n                    System.out.printf(\"\\n%s\\nОтчет по расходам не сходится\\nСумма расходов в годовом отсчете %d\\nСумма расходов в месячном отсчете %d\\n\",\n                            yearlyReport.getNameMount(),\n                            yearlyReport.getAmount(),\n                            MounthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true));\n                }\n            }\n        }\n    }\n\n\n    public static void getInformationByMonths() {\n        Library.checkNull();\n        for (YearlyReport yearlyReport : YearlyReportReader.yearlyReports) {\n            if (!yearlyReport.IsExpense()) {\n                System.out.printf(\"За месяц %s cамый прибыльный товар - %s \\nПродано на сумму %d\\n\",\n                        yearlyReport.getNameMount(),\n                        MounthlyReport.getNameBestMonth(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false),\n                        MounthlyReport.getBestIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false));\n                System.out.printf(\"Самый убыточный товар  - %s \\nТрата составила  %d\\n\",\n                        MounthlyReport.getNameBestMonth(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true),\n                        MounthlyReport.getBestIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true));\n            }\n        }\n    }\n\n    public static void getMatYearly() {\n      Library.checkNull();\n        for (YearlyReport yearlyReport : YearlyReportReader.yearlyReports) {\n            if (!yearlyReport.IsExpense()) {\n                System.out.printf(\"Прибыль за %s %d года составила:\\t%d\\n\",\n                        yearlyReport.getNameMount(),\n                        yearlyReport.getYear(),\n                        YearlyReport.getBalanceForMonth(YearlyReportReader.yearlyReports, yearlyReport.getNumberMount()));\n            }\n        }\n        System.out.printf(\"Средний расход за все месяцы в году составил: %.2f\\n\",\n                YearlyReport.getAverageYearly(YearlyReportReader.yearlyReports, true));\n        System.out.printf(\"Средний доход за все месяцы в году составил: %.2f\\n\",\n                YearlyReport.getAverageYearly(YearlyReportReader.yearlyReports, false));\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Util/Operation.java b/src/Util/Operation.java
+--- a/src/Util/Operation.java	(revision 7081ca9a539ffa11530cd6b3638c9fcad75f7ae8)
++++ b/src/Util/Operation.java	(date 1646405996987)
+@@ -1,36 +1,38 @@
+ package Util;
+ 
++import Records.MonthlyReportReader;
++import Records.YearlyReportReader;
++
+ public class Operation {
+     public static void compareReports() {
+         Library.checkNull();
+         for (YearlyReport yearlyReport : YearlyReportReader.yearlyReports) {
+             if (!yearlyReport.IsExpense()) {
+-                if (yearlyReport.getAmount() == MounthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false)) {
++                if (yearlyReport.getAmount() == MonthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false)) {
+                     System.out.printf("\n%s\nОтчет по доходу сходится, ошибок нет\nСумма дохода в годовом отсчете: %d\nСумма дохода в месячном отсчете: %d\n",
+                             yearlyReport.getNameMount(),
+                             yearlyReport.getAmount(),
+-                            MounthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false));
++                            MonthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false));
+                 } else {
+                     System.out.printf("\n%s\nОтчет по доходу не сходится\nСумма дохода в годовом отсчете %d\nСумма дохода в месячном отсчете %d\n",
+                             yearlyReport.getNameMount(),
+                             yearlyReport.getAmount(),
+-                            MounthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false));
++                            MonthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false));
+                 }
+             } else {
+-                if (yearlyReport.getAmount() == MounthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true)) {
++                if (yearlyReport.getAmount() == MonthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true)) {
+                     System.out.printf("Отчет по расходам сходится, ошибок нет\nСумма расхода в годовом отсчете: %d\nСумма расходов в месячном отсчете: %d\n",
+                             yearlyReport.getAmount(),
+-                            MounthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true));
++                            MonthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true));
+                 } else {
+                     System.out.printf("\n%s\nОтчет по расходам не сходится\nСумма расходов в годовом отсчете %d\nСумма расходов в месячном отсчете %d\n",
+                             yearlyReport.getNameMount(),
+                             yearlyReport.getAmount(),
+-                            MounthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true));
++                            MonthlyReport.getIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true));
+                 }
+             }
+         }
+     }
+-
+ 
+     public static void getInformationByMonths() {
+         Library.checkNull();
+@@ -38,11 +40,11 @@
+             if (!yearlyReport.IsExpense()) {
+                 System.out.printf("За месяц %s cамый прибыльный товар - %s \nПродано на сумму %d\n",
+                         yearlyReport.getNameMount(),
+-                        MounthlyReport.getNameBestMonth(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false),
+-                        MounthlyReport.getBestIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false));
++                        MonthlyReport.getNameBestMonth(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false),
++                        MonthlyReport.getBestIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), false));
+                 System.out.printf("Самый убыточный товар  - %s \nТрата составила  %d\n",
+-                        MounthlyReport.getNameBestMonth(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true),
+-                        MounthlyReport.getBestIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true));
++                        MonthlyReport.getNameBestMonth(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true),
++                        MonthlyReport.getBestIncomeExpensesMount(MonthlyReportReader.mounthlyReports, yearlyReport.getNumberMount(), true));
+             }
+         }
+     }
+Index: src/Util/Library.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package Util;\npublic class Library {\n    public static void checkNull() {\n        if (YearlyReportReader.yearlyReports.size() == 0 || MonthlyReportReader.mounthlyReports.size() == 0) {\n            System.out.println(\"Необходимо считать отчеты!\");\n        }\n    }\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Util/Library.java b/src/Util/Library.java
+--- a/src/Util/Library.java	(revision 7081ca9a539ffa11530cd6b3638c9fcad75f7ae8)
++++ b/src/Util/Library.java	(date 1646372651420)
+@@ -1,6 +1,10 @@
+ package Util;
++
++import Records.MonthlyReportReader;
++import Records.YearlyReportReader;
++
+ public class Library {
+-    public static void checkNull() {
++    public static void checkNull() { //Check reports to write file
+         if (YearlyReportReader.yearlyReports.size() == 0 || MonthlyReportReader.mounthlyReports.size() == 0) {
+             System.out.println("Необходимо считать отчеты!");
+         }
+Index: src/Menu/MenuItems.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/Menu/MenuItems.java b/src/Menu/MenuItems.java
+new file mode 100644
+--- /dev/null	(date 1646408697680)
++++ b/src/Menu/MenuItems.java	(date 1646408697680)
+@@ -0,0 +1,50 @@
++//package Menu;
++//
++//public enum MenuItems{
++//    EXIT("Выход", 0),
++//    READ_MONTH_REPORTS("Считать все месячные отчеты", 1),
++//    READ_YEARLY_REPORTS("Считать годовой отчёт", 2),
++//    CHECK_READINGS("Сверить отчёты", 3),
++//    DISPLAY_INFORMATION_MONTH("Вывести информацию о всех месячных отчётах", 4),
++//    DISPLAY_INFORMATION_YEARLY("Вывести информацию о годовом отчёте", 5);
++//
++//    private String title;
++//    private final int number;
++//
++//    MenuItems(String title, int number) {
++//        this.title = title;
++//        this.number = number;
++//    }
++//
++//    @Override
++//    public String toString() {
++//        return "MenuItems{" +
++//                "title='" + title + '\'' +
++//                ", number=" + number +
++//                '}';
++//    }
++//
++//    public String getTitle() {
++//        return title;
++//    }
++//
++//    public int getNumber() {
++//        return number;
++//    }
++//    public static String getValueOfItem() {
++//        for (MenuItems titles : MenuItems.values()) {
++//            if (titles.title.equals(title)) {
++//                System.out.println(titles);
++//                return titles;
++//            }
++//        }
++//        throw new RuntimeException("Ошибка кода");
++//    }
++
++//    public static MenuItems valueOfNuber (int number) {
++//        for (MenuItems numbers : MenuItems.values()) {
++//                return numbers;
++//            }
++//        } throw new RuntimeException("Ошибка кода");
++//}
++//
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"ChangeListManager\">\n    <list default=\"true\" id=\"c71bac16-da12-42a2-b1ec-6a0da68075b5\" name=\"Changes\" comment=\"Work version\">\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/resources/m.202103.csv\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/resources/m.202103.csv\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/src/Util/Library.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Util/Library.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/src/Util/Menu.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Util/Menu.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/src/Util/MonthlyReportReader.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Util/MonthlyReportReader.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/src/Util/MounthlyReport.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Util/MounthlyReport.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/src/Util/Operation.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Util/Operation.java\" afterDir=\"false\" />\n      <change beforePath=\"$PROJECT_DIR$/src/Util/YearlyReportReader.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/src/Util/YearlyReportReader.java\" afterDir=\"false\" />\n    </list>\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\n  </component>\n  <component name=\"FileTemplateManagerImpl\">\n    <option name=\"RECENT_TEMPLATES\">\n      <list>\n        <option value=\"Class\" />\n      </list>\n    </option>\n  </component>\n  <component name=\"Git.Settings\">\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\n  </component>\n  <component name=\"GitSEFilterConfiguration\">\n    <file-type-list>\n      <filtered-out-file-type name=\"LOCAL_BRANCH\" />\n      <filtered-out-file-type name=\"REMOTE_BRANCH\" />\n      <filtered-out-file-type name=\"TAG\" />\n      <filtered-out-file-type name=\"COMMIT_BY_MESSAGE\" />\n    </file-type-list>\n  </component>\n  <component name=\"MarkdownSettingsMigration\">\n    <option name=\"stateVersion\" value=\"1\" />\n  </component>\n  <component name=\"ProjectId\" id=\"25WIBtBZ8h2Wso43mwi8HlqexoI\" />\n  <component name=\"ProjectLevelVcsManager\" settingsEditedManually=\"true\" />\n  <component name=\"ProjectViewState\">\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\n    <option name=\"showLibraryContents\" value=\"true\" />\n  </component>\n  <component name=\"PropertiesComponent\">\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\n    <property name=\"ToolWindowRun.ShowToolbar\" value=\"false\" />\n    <property name=\"create.test.in.the.same.root\" value=\"true\" />\n    <property name=\"project.structure.last.edited\" value=\"Project\" />\n    <property name=\"project.structure.proportion\" value=\"0.15\" />\n    <property name=\"project.structure.side.proportion\" value=\"0.2\" />\n  </component>\n  <component name=\"RunManager\">\n    <configuration name=\"Main\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\n      <option name=\"MAIN_CLASS_NAME\" value=\"Main\" />\n      <module name=\"AccountingManager\" />\n      <method v=\"2\">\n        <option name=\"Make\" enabled=\"true\" />\n      </method>\n    </configuration>\n    <recent_temporary>\n      <list>\n        <item itemvalue=\"Application.Main\" />\n      </list>\n    </recent_temporary>\n  </component>\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\n  <component name=\"TaskManager\">\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\n      <changelist id=\"c71bac16-da12-42a2-b1ec-6a0da68075b5\" name=\"Changes\" comment=\"\" />\n      <created>1645636286519</created>\n      <option name=\"number\" value=\"Default\" />\n      <option name=\"presentableId\" value=\"Default\" />\n      <updated>1645636286519</updated>\n    </task>\n    <task id=\"LOCAL-00001\" summary=\"Work version\">\n      <created>1645940585607</created>\n      <option name=\"number\" value=\"00001\" />\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1645940585607</updated>\n    </task>\n    <task id=\"LOCAL-00002\" summary=\"Work version\">\n      <created>1645940640499</created>\n      <option name=\"number\" value=\"00002\" />\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\n      <option name=\"project\" value=\"LOCAL\" />\n      <updated>1645940640499</updated>\n    </task>\n    <option name=\"localTasksCounter\" value=\"3\" />\n    <servers />\n  </component>\n  <component name=\"Vcs.Log.Tabs.Properties\">\n    <option name=\"TAB_STATES\">\n      <map>\n        <entry key=\"MAIN\">\n          <value>\n            <State />\n          </value>\n        </entry>\n      </map>\n    </option>\n  </component>\n  <component name=\"VcsManagerConfiguration\">\n    <MESSAGE value=\"Work\" />\n    <MESSAGE value=\"Work version\" />\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Work version\" />\n  </component>\n  <component name=\"XDebuggerManager\">\n    <breakpoint-manager>\n      <breakpoints>\n        <breakpoint enabled=\"true\" type=\"java-exception\">\n          <properties class=\"java.lang.NullPointerException\" package=\"java.lang\" />\n          <option name=\"timeStamp\" value=\"7\" />\n        </breakpoint>\n        <breakpoint enabled=\"true\" type=\"java-exception\">\n          <properties class=\"java.lang.NumberFormatException\" package=\"java.lang\" />\n          <option name=\"timeStamp\" value=\"9\" />\n        </breakpoint>\n        <breakpoint enabled=\"true\" type=\"java-exception\">\n          <properties class=\"java.util.InputMismatchException\" package=\"java.util\" />\n          <option name=\"timeStamp\" value=\"10\" />\n        </breakpoint>\n      </breakpoints>\n    </breakpoint-manager>\n  </component>\n  <component name=\"com.intellij.coverage.CoverageDataManagerImpl\">\n    <SUITE FILE_PATH=\"coverage/AccountingManager$Main.ic\" NAME=\"Main Coverage Results\" MODIFIED=\"1645967850584\" SOURCE_PROVIDER=\"com.intellij.coverage.DefaultCoverageFileProvider\" RUNNER=\"idea\" COVERAGE_BY_TEST_ENABLED=\"false\" COVERAGE_TRACING_ENABLED=\"false\" />\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 7081ca9a539ffa11530cd6b3638c9fcad75f7ae8)
++++ b/.idea/workspace.xml	(date 1646484879494)
+@@ -2,14 +2,21 @@
+ <project version="4">
+   <component name="ChangeListManager">
+     <list default="true" id="c71bac16-da12-42a2-b1ec-6a0da68075b5" name="Changes" comment="Work version">
++      <change afterPath="$PROJECT_DIR$/src/Menu/MenuItems.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/resources/m.202103.csv" beforeDir="false" afterPath="$PROJECT_DIR$/resources/m.202103.csv" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/AccountingManager/Util/Library.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AccountingManager/Util/Library.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/AccountingManager/Util/Menu.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AccountingManager/Util/Menu.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/AccountingManager/Util/MonthlyReportReader.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AccountingManager/Util/MonthlyReportReader.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/AccountingManager/Util/MounthlyReport.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AccountingManager/Util/MounthlyReport.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/out/production/AccountingManager/Util/YearlyReportReader.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/AccountingManager/Util/YearlyReportReader.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/src/Util/Library.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Util/Library.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/Util/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Util/Menu.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/Util/MonthlyReportReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Util/MonthlyReportReader.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/Util/MounthlyReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Util/MounthlyReport.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/Util/Menu.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Menu/Menu.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/Util/MonthlyReportReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Records/MonthlyReportReader.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/Util/MounthlyReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Util/MonthlyReport.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/src/Util/Operation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Util/Operation.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/src/Util/YearlyReportReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Util/YearlyReportReader.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/Util/YearlyReport.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Util/YearlyReport.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/src/Util/YearlyReportReader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Records/YearlyReportReader.java" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -19,7 +26,9 @@
+   <component name="FileTemplateManagerImpl">
+     <option name="RECENT_TEMPLATES">
+       <list>
++        <option value="Enum" />
+         <option value="Class" />
++        <option value="Interface" />
+       </list>
+     </option>
+   </component>
+@@ -51,6 +60,11 @@
+     <property name="project.structure.last.edited" value="Project" />
+     <property name="project.structure.proportion" value="0.15" />
+     <property name="project.structure.side.proportion" value="0.2" />
++  </component>
++  <component name="RecentsManager">
++    <key name="ExtractSuperBase.RECENT_KEYS">
++      <recent name="Menu" />
++    </key>
+   </component>
+   <component name="RunManager">
+     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+@@ -89,7 +103,21 @@
+       <option name="project" value="LOCAL" />
+       <updated>1645940640499</updated>
+     </task>
+-    <option name="localTasksCounter" value="3" />
++    <task id="LOCAL-00003" summary="Work version">
++      <created>1646080012867</created>
++      <option name="number" value="00003" />
++      <option name="presentableId" value="LOCAL-00003" />
++      <option name="project" value="LOCAL" />
++      <updated>1646080012867</updated>
++    </task>
++    <task id="LOCAL-00004" summary="Work version">
++      <created>1646080025233</created>
++      <option name="number" value="00004" />
++      <option name="presentableId" value="LOCAL-00004" />
++      <option name="project" value="LOCAL" />
++      <updated>1646080025233</updated>
++    </task>
++    <option name="localTasksCounter" value="5" />
+     <servers />
+   </component>
+   <component name="Vcs.Log.Tabs.Properties">
